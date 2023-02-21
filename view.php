@@ -53,9 +53,12 @@ if (isset($_POST['submit'])) {
             $section = $_POST['section'];
             $fname = $_POST['fname'];
             //echo $phno;
-            $sql = "UPDATE `student` SET `name`='$name', `class`='$class', `section`='$section', `fname`='$fname', `admno`=$admno, `phn`=$phno, `admfee`=$admfee, `monfee`=$monfee, `vehfee`=$vehfee WHERE `id`=$id;";
-            $result = mysqli_query($conn, $sql);
-            if ($result)
+            $sql1 = "UPDATE `student` SET `name`='$name', `class`='$class', `section`='$section', `fname`='$fname', `admno`=$admno, `phn`=$phno, `admfee`=$admfee, `monfee`=$monfee, `vehfee`=$vehfee WHERE `id`=$id;";
+            $result1 = mysqli_query($conn, $sql1);
+            $sum=$admfee+$monfee+$vehfee;
+            $sql2="UPDATE `accounts` SET `balance`=$sum-`paid` WHERE `sid`=$id";
+            $result2 = mysqli_query($conn, $sql2);
+            if ($result1 && $result2)
                 $added = true;
                 $sql="SELECT * FROM `student` WHERE `id`=$id";
                 $result=mysqli_query($conn,$sql);
