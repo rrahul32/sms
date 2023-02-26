@@ -38,20 +38,19 @@ if (isset($_POST['submit'])) {
             $fname = strtolower($_POST['fname']);
             $sql = "INSERT INTO `student`(`admno`,`name`,`class`,`section`,`fname`,`phn`,`admfee`,`monfee`,`vehfee`) VALUES($admno,'$name','$class','$section','$fname',$phno,$admfee,$monfee,$vehfee);";
             $result = mysqli_query($conn, $sql);
-            if ($result){
-                $current_month = date('n'); // Get the current month (1-12)
-
-// Calculate the number of months to March of next year, including the current month and next year March
-$months= 16-$current_month;
-if($months>12)
-$months=12;
-                $balance = $admfee + ($vehfee + $monfee)*$months;
-            $sql = "INSERT INTO `accounts`(`sid`,`paid`,`balance`) VALUES((SELECT `id` FROM `student` WHERE `admno`=$admno),0,$balance);";
-            $result = mysqli_query($conn, $sql);
             if ($result) {
-                $added = true;
+                $current_month = date('n'); // Get the current month (1-12)
+                // Calculate the number of months to March of next year, including the current month and next year March
+                $months = 16 - $current_month;
+                if ($months > 12)
+                    $months = 12;
+                $balance = $admfee + ($vehfee + $monfee) * $months;
+                $sql = "INSERT INTO `accounts`(`sid`,`paid`,`balance`) VALUES((SELECT `id` FROM `student` WHERE `admno`=$admno),0,$balance);";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    $added = true;
+                }
             }
-        }
         } else
             $duplicate = true;
     }

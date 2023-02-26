@@ -53,8 +53,13 @@ if (isset($_POST['submit'])) {
             //echo $phno;
             $sql1 = "UPDATE `student` SET `name`='$name', `class`='$class', `section`='$section', `fname`='$fname', `admno`=$admno, `phn`=$phno, `admfee`=$admfee, `monfee`=$monfee, `vehfee`=$vehfee WHERE `id`=$id;";
             $result1 = mysqli_query($conn, $sql1);
-            $sum = $admfee + $monfee + $vehfee;
-            $sql2 = "UPDATE `accounts` SET `balance`=$sum-`paid` WHERE `sid`=$id";
+            $current_month = date('n'); // Get the current month (1-12)
+                // Calculate the number of months to March of next year, including the current month and next year March
+                $months = 16 - $current_month;
+                if ($months > 12)
+                    $months = 12;
+            $change = $row['admfee']-$admfee+ ($row['monfee']-$monfee + $row['vehfee']-$vehfee)*$months;
+            $sql2 = "UPDATE `accounts` SET `balance`=$balance+`balance` WHERE `sid`=$id";
             $result2 = mysqli_query($conn, $sql2);
             if ($result1 && $result2)
                 $added = true;
