@@ -25,10 +25,10 @@
           <a class="nav-link" href="duelist.php">Due List</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="logout.php">Logout</a>
+          <a class="nav-link" href="databackup.php">Backup Data</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="databackup.php">Backup Data</a>
+          <a class="nav-link" href="logout.php">Logout</a>
         </li>
       </ul>
       

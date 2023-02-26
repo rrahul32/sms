@@ -58,8 +58,8 @@ if (isset($_POST['submit'])) {
                 $months = 16 - $current_month;
                 if ($months > 12)
                     $months = 12;
-            $change = $row['admfee']-$admfee+ ($row['monfee']-$monfee + $row['vehfee']-$vehfee)*$months;
-            $sql2 = "UPDATE `accounts` SET `balance`=$balance+`balance` WHERE `sid`=$id";
+            $change = $admfee-$row['admfee']+ ($monfee-$row['monfee']+ $vehfee-$row['vehfee'])*$months;
+            $sql2 = "UPDATE `accounts` SET `balance`=$change+`balance` WHERE `sid`=$id";
             $result2 = mysqli_query($conn, $sql2);
             if ($result1 && $result2)
                 $added = true;
