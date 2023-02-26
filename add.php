@@ -9,7 +9,7 @@ $phvalid = true;
 $monfeevalid = true;
 $vehfeevalid = true;
 $added = false;
-$duplicate=false;
+$duplicate = false;
 if (isset($_POST['submit'])) {
     $admno = $_POST['admno'];
     $phno = $_POST['phn'];
@@ -28,30 +28,25 @@ if (isset($_POST['submit'])) {
         $vehfeevalid = false;
     if ($admfeevalid && $admvalid && $phvalid && $monfeevalid && $vehfeevalid) {
         include_once "connect.php";
-        $sql="SELECT * FROM `student` WHERE `admno`=$admno;";
-        $result=mysqli_query($conn,$sql);
-        $numofrows=mysqli_num_rows($result);
-        if($numofrows==0)
-        {
-        $name = strtolower($_POST['name']);
-        $class = $_POST['class'];
-        $section = $_POST['section'];
-        $fname = strtolower($_POST['fname']);
-        $sql = "INSERT INTO `student`(`admno`,`name`,`class`,`section`,`fname`,`phn`,`admfee`,`monfee`,`vehfee`) VALUES($admno,'$name','$class','$section','$fname',$phno,$admfee,$monfee,$vehfee);";
+        $sql = "SELECT * FROM `student` WHERE `admno`=$admno;";
         $result = mysqli_query($conn, $sql);
-        if ($result)
-            $balance=$admfee+$vehfee+$monfee;
-            $sql="INSERT INTO `accounts`(`sid`,`paid`,`balance`) VALUES((SELECT `id` FROM `student` WHERE `admno`=$admno),0,$balance);";
-            $result=mysqli_query($conn,$sql);
-            if($result)
-            {
+        $numofrows = mysqli_num_rows($result);
+        if ($numofrows == 0) {
+            $name = strtolower($_POST['name']);
+            $class = $_POST['class'];
+            $section = $_POST['section'];
+            $fname = strtolower($_POST['fname']);
+            $sql = "INSERT INTO `student`(`admno`,`name`,`class`,`section`,`fname`,`phn`,`admfee`,`monfee`,`vehfee`) VALUES($admno,'$name','$class','$section','$fname',$phno,$admfee,$monfee,$vehfee);";
+            $result = mysqli_query($conn, $sql);
+            if ($result)
+                $balance = $admfee + $vehfee + $monfee;
+            $sql = "INSERT INTO `accounts`(`sid`,`paid`,`balance`) VALUES((SELECT `id` FROM `student` WHERE `admno`=$admno),0,$balance);";
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
                 $added = true;
             }
-
-        }
-        else
-        $duplicate=true;
-        
+        } else
+            $duplicate = true;
     }
 }
 ?>
@@ -74,14 +69,14 @@ if (isset($_POST['submit'])) {
     <!-- add student -->
     <div class="container my-5 mx-auto p-5 border justify-content-center bg-light">
         <?php
-        if($added)
-        echo '
+        if ($added)
+            echo '
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             Student details added successfully.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>';
-        if($duplicate)
-        echo '
+        if ($duplicate)
+            echo '
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             Admission number already exists.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -161,14 +156,51 @@ if (isset($_POST['submit'])) {
                     </div>
                 </div>
             </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary" onclick="calculateTotal()">Find Total</button>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-auto px-1">
+                    <label for="total" class="col-form-label" style="font-size:1.5rem;"><b>Total:</b></label>
+                </div>
+                <div class="col-auto my-auto px-0">
+                    <span id="total" class="text-primary" style="font-weight: bold; font-size:1.5rem">0</span>
+                    <!-- <input required type="text" id="total" class="form-control text-primary" name="total" disabled value="0" style="font-weight: bold;"> -->
+                </div>
+            </div>
             <div class="justify-content-center text-center">
                 <button type="submit" class="btn btn-primary" name="submit">Add Student</button>
             </div>
+
         </form>
+
     </div>
     <!-- add student close -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+    <script>
+        function calculateTotal() {
+            const vehfee = document.getElementById('vehfee');
+            const monfee = document.getElementById('monfee');
+            const admfee = document.getElementById('admfee');
+            vehfee.classList.remove("is-invalid");
+            monfee.classList.remove("is-invalid");
+            admfee.classList.remove("is-invalid");
+            if (isNaN(admfee.value) || admfee.value == "") {
+                admfee.classList.add("is-invalid")
+                admfee.focus();
+            } else if (isNaN(vehfee.value) || vehfee.value == "") {
+                vehfee.classList.add("is-invalid")
+                vehfee.focus();
+            } else if (isNaN(monfee.value) || monfee.value == "") {
+                monfee.classList.add("is-invalid")
+                monfee.focus();
+            } else
+                document.getElementById('total').innerText = (Number(vehfee.value) + Number(monfee.value)) * 12 + Number(admfee.value);
+        }
+    </script>
 </body>
 
 </html>

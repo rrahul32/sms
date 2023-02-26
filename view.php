@@ -11,17 +11,16 @@ $vehfeevalid = true;
 $added = false;
 $duplicate = false;
 //get results
-if(isset($_GET['id']))
-{
-    $id=$_GET['id'];
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
     include_once "connect.php";
-    $sql="SELECT * FROM `student` WHERE `id`=$id";
-    $result=mysqli_query($conn,$sql);
-    $row=mysqli_fetch_assoc($result);
+    $sql = "SELECT * FROM `student` WHERE `id`=$id";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
 }
 // post search
 if (isset($_POST['submit'])) {
-    $id=$_POST['id'];
+    $id = $_POST['id'];
     $admno = $_POST['admno'];
     $phno = $_POST['phn'];
     $admfee = $_POST['admfee'];
@@ -38,16 +37,15 @@ if (isset($_POST['submit'])) {
     if (!preg_match("/^[0-9]*$/", $vehfee))
         $vehfeevalid = false;
     if ($admfeevalid && $admvalid && $phvalid && $monfeevalid && $vehfeevalid) {
-        if($admno!=$row['admno'])
-        $sql = "SELECT `id` FROM `student` WHERE `admno`=$admno;";
+        if ($admno != $row['admno'])
+            $sql = "SELECT `id` FROM `student` WHERE `admno`=$admno;";
         $result = mysqli_query($conn, $sql);
         $rows = mysqli_fetch_row($result);
-        if($rows!=null)
-        if ($rows[0] != $id)
-        $duplicate = true;
-        if(!$duplicate)
-        {
-            
+        if ($rows != null)
+            if ($rows[0] != $id)
+                $duplicate = true;
+        if (!$duplicate) {
+
             $name = strtolower($_POST['name']);
             $class = $_POST['class'];
             $section = $_POST['section'];
@@ -55,16 +53,15 @@ if (isset($_POST['submit'])) {
             //echo $phno;
             $sql1 = "UPDATE `student` SET `name`='$name', `class`='$class', `section`='$section', `fname`='$fname', `admno`=$admno, `phn`=$phno, `admfee`=$admfee, `monfee`=$monfee, `vehfee`=$vehfee WHERE `id`=$id;";
             $result1 = mysqli_query($conn, $sql1);
-            $sum=$admfee+$monfee+$vehfee;
-            $sql2="UPDATE `accounts` SET `balance`=$sum-`paid` WHERE `sid`=$id";
+            $sum = $admfee + $monfee + $vehfee;
+            $sql2 = "UPDATE `accounts` SET `balance`=$sum-`paid` WHERE `sid`=$id";
             $result2 = mysqli_query($conn, $sql2);
             if ($result1 && $result2)
                 $added = true;
-                $sql="SELECT * FROM `student` WHERE `id`=$id";
-                $result=mysqli_query($conn,$sql);
-                $row=mysqli_fetch_assoc($result);
+            $sql = "SELECT * FROM `student` WHERE `id`=$id";
+            $result = mysqli_query($conn, $sql);
+            $row = mysqli_fetch_assoc($result);
         }
-            
     }
 }
 ?>
@@ -100,16 +97,16 @@ if (isset($_POST['submit'])) {
         ?>
         <h3 class="text-center mb-5">View Student</h3>
         <!-- get student details -->
-       <form action="" method="post" class="border pb-2" <?php if(!isset($_GET['id']))echo 'hidden'?> id="postForm" onsubmit="return confirm('Do you really want to update the details?');">
-       <input type="hidden" name='id' value="<?php if(isset($row))echo ($row['id'])?>">    
-       <div class="row g-3 align-items-center justify-content-center">
+        <form action="" method="post" class="border pb-2" <?php if (!isset($_GET['id'])) echo 'hidden' ?> id="postForm" onsubmit="return confirm('Do you really want to update the details?');">
+            <input type="hidden" name='id' value="<?php if (isset($row)) echo ($row['id']) ?>">
+            <div class="row g-3 align-items-center justify-content-center">
                 <div class="col-auto mb-3">
                     <label for="name" class="col-form-label">Name</label>
-                    <input required type="text" id="name" class="form-control" name="name" value="<?php if(isset($row))echo ucwords($row['name'])?>">
+                    <input required type="text" id="name" class="form-control" name="name" value="<?php if (isset($row)) echo ucwords($row['name']) ?>">
                 </div>
                 <div class="col-auto mb-3">
                     <label for="admno" class="col-form-label">Admission No.</label>
-                    <input required type="text" id="admno" class="form-control <?php if (!$admvalid) echo 'is-invalid' ?>" name="admno" aria-describedby="admInvalid" value="<?php if(isset($row))echo $row['admno']?>">
+                    <input required type="text" id="admno" class="form-control <?php if (!$admvalid) echo 'is-invalid' ?>" name="admno" aria-describedby="admInvalid" value="<?php if (isset($row)) echo $row['admno'] ?>">
                     <div id="admInvalid" class="invalid-feedback">
                         Please provide a valid number.
                     </div>
@@ -142,11 +139,11 @@ if (isset($_POST['submit'])) {
                 </div>
                 <div class="col-auto mb-3">
                     <label for="fname" class="col-form-label">Father's Name</label>
-                    <input required type="text" id="fname" class="form-control" name="fname" value="<?php if(isset($row))echo ucwords($row['fname'])?>">
+                    <input required type="text" id="fname" class="form-control" name="fname" value="<?php if (isset($row)) echo ucwords($row['fname']) ?>">
                 </div>
                 <div class="col-auto mb-3">
                     <label for="phn" class="col-form-label">Phone No.</label>
-                    <input required type="text" id="phn" class="form-control <?php if (!$phvalid) echo 'is-invalid' ?>" name="phn" maxlength="10" aria-describedby="phnInvalid" value="<?php if(isset($row))echo ($row['phn'])?>">
+                    <input required type="text" id="phn" class="form-control <?php if (!$phvalid) echo 'is-invalid' ?>" name="phn" maxlength="10" aria-describedby="phnInvalid" value="<?php if (isset($row)) echo ($row['phn']) ?>">
                     <div id="phnInvalid" class="invalid-feedback">
                         Please provide a valid phone number.
                     </div>
@@ -154,64 +151,105 @@ if (isset($_POST['submit'])) {
 
                 <div class="col-auto mb-3">
                     <label for="admfee" class="col-form-label">Admission Fee</label>
-                    <input required type="text" id="admfee" class="form-control <?php if (!$admfeevalid) echo 'is-invalid' ?>" name="admfee" aria-describedby="admfeeInvalid" value="<?php if(isset($row))echo ($row['admfee'])?>">
+                    <input required type="text" id="admfee" class="form-control <?php if (!$admfeevalid) echo 'is-invalid' ?>" name="admfee" aria-describedby="admfeeInvalid" value="<?php if (isset($row)) echo ($row['admfee']) ?>">
                     <div id="admfeeInvalid" class="invalid-feedback">
                         Please provide a valid number.
                     </div>
                 </div>
                 <div class="col-auto mb-3">
                     <label for="monfee" class="col-form-label">Monthly Fee</label>
-                    <input required type="text" id="monfee" class="form-control <?php if (!$monfeevalid) echo 'is-invalid' ?>" name="monfee" aria-describedby="monInvalid" value="<?php if(isset($row))echo ($row['monfee'])?>">
+                    <input required type="text" id="monfee" class="form-control <?php if (!$monfeevalid) echo 'is-invalid' ?>" name="monfee" aria-describedby="monInvalid" value="<?php if (isset($row)) echo ($row['monfee']) ?>">
                     <div id="monInvalid" class="invalid-feedback">
                         Please provide a valid number.
                     </div>
                 </div>
                 <div class="col-auto mb-3">
                     <label for="vehfee" class="col-form-label">Vehicle Charges</label>
-                    <input required type="text" id="vehfee" class="form-control <?php if (!$vehfeevalid) echo 'is-invalid' ?>" name="vehfee" aria-describedby="vehinvalid" value="<?php if(isset($row))echo ucwords($row['vehfee'])?>">
+                    <input required type="text" id="vehfee" class="form-control <?php if (!$vehfeevalid) echo 'is-invalid' ?>" name="vehfee" aria-describedby="vehinvalid" value="<?php if (isset($row)) echo ucwords($row['vehfee']) ?>">
                     <div id="vehInvalid" class="invalid-feedback">
                         Please provide a valid number.
                     </div>
                 </div>
             </div>
+            <div id="findTotal" class="row justify-content-center mb-3 d-none">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary" onclick="calculateTotal()">Find Total</button>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-3">
+                <div class="col-auto px-1">
+                    <label for="total" class="col-form-label" style="font-size:1.5rem;"><b>Total:</b></label>
+                </div>
+                <div class="col-auto my-auto px-0">
+                    <span id="total" class="text-primary" style="font-weight: bold; font-size:1.5rem"><?= isset($row) ? $row['admfee'] + ($row['monfee'] + $row['vehfee']) * 12 : 0 ?></span>
+                    <!-- <input required type="text" id="total" class="form-control text-primary" name="total" disabled value="0" style="font-weight: bold;"> -->
+                </div>
+            </div>
             <div class="justify-content-center text-center">
                 <a href="javascript:editable();" class="btn btn-primary" id="edit" name="edit">Edit</a>
             </div>
-            <div class="justify-content-center text-center">
-                <button type="submit" class="btn btn-primary" id="submit" name="submit">Update Student</button>
+            <div id="editUpdate" class="row justify-content-center mb-3 d-none">
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary" id="submit" name="submit">Update Student</button>
+                </div>
+                <div class="col-auto">
+                    <a type="button" class="btn btn-primary" href="">Cancel</a>
+                </div>
             </div>
         </form>
     </div>
     <!-- view student close -->
     <script>
-        document.querySelector("#class").querySelectorAll("option").forEach((ele)=>{
-            if(ele.value=='<?php echo $row['class']?>')
-            ele.selected=true;
+        document.querySelector("#class").querySelectorAll("option").forEach((ele) => {
+            if (ele.value == '<?php echo $row['class'] ?>')
+                ele.selected = true;
         })
-        document.querySelector("#section").querySelectorAll("option").forEach((ele)=>{
-            if(ele.value=='<?php echo $row['section']?>')
-            ele.selected=true;
+        document.querySelector("#section").querySelectorAll("option").forEach((ele) => {
+            if (ele.value == '<?php echo $row['section'] ?>')
+                ele.selected = true;
         })
-        const input=document.querySelector("#postForm").querySelectorAll(".form-control");
-        const select=document.querySelectorAll(".form-select");
-        const submit=document.querySelector("#submit");
-        const edit=document.querySelector("#edit");
-        input.forEach((ele)=>{
-            ele.disabled=true;
+        const input = document.querySelector("#postForm").querySelectorAll(".form-control");
+        const select = document.querySelectorAll(".form-select");
+        const edit = document.querySelector("#edit");
+        const findTotal = document.querySelector("#findTotal");
+        const editUpdate = document.querySelector("#editUpdate");
+        input.forEach((ele) => {
+            ele.disabled = true;
         })
-        select.forEach((ele)=>{
-            ele.disabled=true;
+        select.forEach((ele) => {
+            ele.disabled = true;
         })
-        submit.hidden=true;
-        function editable(){
-            edit.hidden=true;
-            submit.hidden=false;
-            input.forEach((ele)=>{
-                ele.disabled=false;
+
+        function editable() {
+            findTotal.classList.remove("d-none");
+            editUpdate.classList.remove("d-none");
+            edit.hidden = true;
+            input.forEach((ele) => {
+                ele.disabled = false;
             });
-            select.forEach((ele)=>{
-                ele.disabled=false;
+            select.forEach((ele) => {
+                ele.disabled = false;
             });
+        }
+
+        function calculateTotal() {
+            const vehfee = document.getElementById('vehfee');
+            const monfee = document.getElementById('monfee');
+            const admfee = document.getElementById('admfee');
+            vehfee.classList.remove("is-invalid");
+            monfee.classList.remove("is-invalid");
+            admfee.classList.remove("is-invalid");
+            if (isNaN(admfee.value) || admfee.value == "") {
+                admfee.classList.add("is-invalid")
+                admfee.focus();
+            } else if (isNaN(vehfee.value) || vehfee.value == "") {
+                vehfee.classList.add("is-invalid")
+                vehfee.focus();
+            } else if (isNaN(monfee.value) || monfee.value == "") {
+                monfee.classList.add("is-invalid")
+                monfee.focus();
+            } else
+                document.getElementById('total').innerText = (Number(vehfee.value) + Number(monfee.value)) * 12 + Number(admfee.value);
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
