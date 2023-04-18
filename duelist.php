@@ -20,8 +20,18 @@ WHEN `class`='X' THEN 13
 END ASC; ";
 $result = mysqli_query($conn, $sql);
 if ($result) {
-    $data = mysqli_fetch_all($result);
+    $data = mysqli_fetch_all($result,MYSQLI_ASSOC);
+    if(isset($_GET['sort']) && $_GET['sort']!="All")
+    {
+        function arFilter($row){
+            return $row['class']==$_GET['sort'];
+        }
+        $data=array_filter($data,"arFilter");
+    }
 }
+
+$classes= ["All", "NUR", "LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+// echo var_dump($classes);
 ?>
 <!doctype html>
 <html lang="en">
@@ -37,8 +47,21 @@ if ($result) {
     <?php
     include_once "nav.php";
     ?>
-    <div class="container justify-content-center text-center overflow-auto" id="dueList" style="max-height: 77vh;">
+    <div class="col-3 mx-auto text-center m-3">
+        <button class="btn btn-primary" onclick="printDiv()">Print</button>
+    </div>
+    <div class="container justify-content-center text-center" id="dueList" style="max-height: 77vh;">
         <h1 class="col-6 text-center mx-auto pt-3 pb-2">Due List</h1>
+        <div class="col-3 mx-auto mb-3">
+            <form action="" method="get" id="sortForm">
+                <label for="sort">Class</label> 
+                <select class="form-select" name="sort" id="sort">
+                    <?php foreach($classes as $class): ?>
+                        <option value="<?= $class ?>" <?= isset($_GET['sort'])&&$_GET['sort']==$class?'selected':'' ?>><?= $class ?></option>
+                        <?php endforeach ?>
+                </select>
+            </form>
+        </div>
         <div class="col" id="data">
             <table class="table table-striped table-bordered">
                 <thead>
@@ -65,10 +88,12 @@ if ($result) {
             </table>
         </div>
     </div>
-    <div class="col-3 mx-auto text-center mt-3">
-        <button class="btn btn-primary" onclick="printDiv()">Print</button>
-    </div>
+    
     <script>
+        let sort=document.getElementById('sort');
+        sort.addEventListener('change', ()=>{
+            document.getElementById('sortForm').submit();
+        });
         function printDiv() {
             const printable = document.getElementById('dueList').innerHTML;
             const original = document.body.innerHTML;
@@ -80,5 +105,4 @@ if ($result) {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
 </body>
-
 </html>
